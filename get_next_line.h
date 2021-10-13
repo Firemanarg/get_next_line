@@ -17,5 +17,7 @@
 
 char	*get_next_line(int fd);
 char	*ft_strndup(char *str, size_t n);
+size_t	ft_strlen(const char *str);
+size_t	ft_cpynstr(char *dest, const char *src, size_t n);
 
 #endif

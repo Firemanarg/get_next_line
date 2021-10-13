@@ -33,3 +33,29 @@ char	*ft_strndup(const char *str, size_t n)
 	new_str[index] = '\0';
 	return (new_str);
 }
+
+size_t	ft_strlen(const char *str)
+{
+	const char	*s;
+
+	s = str;
+	while (*s)
+		s++;
+	return (s - str);
+}
+
+size_t	ft_cpynstr(char *dst, const char *src, size_t n)
+{
+	size_t	index;
+
+	index = 0;
+	while (*src != '\0' && index < n)
+	{
+		*dst = *src;
+		dst++;
+		src++;
+		index += 1;
+	}
+	*dst = '\0';
+	return (index);
+}
