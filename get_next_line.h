@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/07 11:26:36 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/10/07 11:26:36 by lsilva-q         ###   ########.fr       */
+/*   Created: 2021/10/26 19:03:30 by lsilva-q          #+#    #+#             */
+/*   Updated: 2021/10/26 20:33:01 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 # include <stdlib.h>
 
 char	*get_next_line(int fd);
-char	*ft_strndup(char *str, size_t n);
+char	*ft_append_str(const char *str1, const char *str2);
+char	*ft_strndup(const char *str, size_t n);
 size_t	ft_strlen(const char *str);
-size_t	ft_cpynstr(char *dest, const char *src, size_t n);
+size_t	ft_cpynstr(char *dst, const char *src, size_t n);
 
 #endif
