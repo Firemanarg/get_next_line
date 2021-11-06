@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/29 16:59:35 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/10/29 23:31:26 by lsilva-q         ###   ########.fr       */
+/*   Created: 2021/11/06 19:47:59 by lsilva-q          #+#    #+#             */
+/*   Updated: 2021/11/06 22:38:58 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 # include <stdlib.h>
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *str);
 char	*ft_strndup(const char *str, size_t n);
-char	*ft_appendstr(const char *str1, const char *str2, size_t l1, size_t l2);
+char	*ft_appstr(char *str1, char *str2, size_t len1, size_t len2);
+size_t	ft_strlen(const char *str);
 size_t	ft_cpynstr(char *dst, const char *src, size_t n);
+char	*find_endl_chr(const char *str, size_t len);
 
 #endif

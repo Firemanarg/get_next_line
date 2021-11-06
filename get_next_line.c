@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/29 16:59:38 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/10/29 23:55:41 by lsilva-q         ###   ########.fr       */
+/*   Created: 2021/11/06 19:47:34 by lsilva-q          #+#    #+#             */
+/*   Updated: 2021/11/06 22:38:56 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,92 +16,81 @@
 /*	*****************   S T A T I C   F U N C T I O N S   ******************* */
 /*	************************************************************************* */
 
-static char	*clearall_and_return_null(char **buffer, char **backup);
-static char	*find_endl_chr(const char *str, size_t len);
-static char	*endl_at_backup(char **buffer, char **backup, char *endl_chr);
-static char	*endl_at_buffer(char **buffer, char **backup, char *endl_chr);
-
 /*	************************************************************************* */
 /*	*******************   I M P L E M E N T A T I O N S   ******************* */
 /*	************************************************************************* */
 
-char    *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char    *backup;
-    char        *buffer;
-    char        *endl_chr;
-    char        *result;
-    int            read_bytes;
-    size_t        len;
+	static char	*backup;
+	char		*buffer;
+	char		*result;
+	char		*endl_chr;
+	size_t		read_bytes;
 
-    if (fd <= 0)
-        return (clearall_and_return_null(&buffer, &backup));
-    endl_chr = find_endl_chr(backup, ft_strlen(backup));
-    if (endl_chr)
-    {
-        result = ft_strndup(backup, (endl_char - backup) + 1);
-        if (result == NULL)
-            return (clearall_and_return_null(&buffer, &backup));
-        len = ft_strlen(backup) - ((endl_chr - backup) + 1);
-        buffer = ft_strndup(backup, len);
-        if (buffer == NULL && len > 0)
-            return (clearall_and_return_null(&buffer, &backup));
-        free(backup);
-        backup = buffer;
-        return (result);
-    }
-    buffer = (char *) malloc(BUFFER_SIZE * sizeof(char));
-    if (buffer == NULL)
-        return (clearall_and_return_null(&buffer, &backup));
-    read_bytes = read(fd, buffer, BUFFER_SIZE);
-    if (read_bytes <= 0)
-        return (clearall_and_return_null(&buffer, &backup));
-    endl_chr = find_endl_chr(buffer, read_bytes);
-    if (endl_char)
-    {
-        len = (endl_chr - buffer) + 1;
-        result = ft_appendstr(backup, buffer, ft_strlen(backup), len);
-        if (backup)
-            free(backup);
-        backup = ft_strndup(endl_chr + 1, read_bytes - len);
-        if (buffer)
-            free(buffer);
-        return (result);
-    }
-    result = ft_appendstr(backup, buffer, ft_strlen(backup), read_bytes);
-    clearall_and_return_null(&buffer, &backup);
-    backup = result;
-    return (get_next_line(fd));
-}
-
-/*	************************************************************************* */
-
-static char	*clearall_and_return_null(char **buffer, char **backup)
-{
-	if (*buffer)
-		free(*buffer);
-	if (*backup)
-		free(*backup);
-	return (NULL);
-}
-
-/*	************************************************************************* */
-
-static char	*find_endl_chr(const char *str, size_t len)
-{
-	size_t	i;
-
-	if (str != NULL)
+	if (backup)
 	{
-		i = 0;
-		while (i < len)
+		endl_chr = find_endl_chr(backup, ft_strlen(backup));
+		if (endl_chr)
 		{
-			if (*str == '\n' || *str == '\0')
-				return (str);
-			str++;
+			result = ft_strndup(backup, (endl_chr - backup) + 1);
+			if ((endl_chr - backup) + 1 < (long) ft_strlen(backup))
+			{
+				buffer = ft_strndup(endl_chr + 1, ft_strlen(endl_chr + 1));
+				free(backup);
+				backup = NULL;
+				backup = buffer;
+			}
+			else
+			{
+				free(backup);
+				backup = NULL;
+			}
+			return (result);
 		}
 	}
-	return (NULL);
+	buffer = malloc(BUFFER_SIZE * sizeof(char));
+	read_bytes = read(fd, buffer, BUFFER_SIZE);
+	if (read_bytes <= 0)
+	{
+		if (buffer)
+			free(buffer);
+		if (backup)
+		{
+			result = ft_strndup(backup, ft_strlen(backup));
+			free(backup);
+			backup = NULL;
+		}
+		else
+			return (NULL);
+	}
+	else
+	{
+		endl_chr = find_endl_chr(buffer, ft_strlen(buffer));
+		if (endl_chr)
+		{
+			result = ft_appstr(backup, buffer, ft_strlen(backup), (endl_chr - buffer) + 1);
+			if (backup)
+				free(backup);
+			if ((endl_chr - buffer) + 1 < (long) ft_strlen(buffer))
+				backup = ft_strndup(endl_chr + 1, ft_strlen(endl_chr + 1));
+			free(buffer);
+		}
+		else
+		{
+			result = ft_appstr(backup, buffer, ft_strlen(backup), ft_strlen(buffer));
+			if (backup)
+			{
+				free(backup);
+				backup = NULL;
+			}
+			if (buffer)
+				free(buffer);
+			backup = result;
+			result = get_next_line(fd);
+		}
+	}
+	return (result);
 }
 
 /*	************************************************************************* */
