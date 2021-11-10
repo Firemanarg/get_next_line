@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/06 19:47:59 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/11/06 22:38:58 by lsilva-q         ###   ########.fr       */
+/*   Created: 2021/11/09 14:42:57 by lsilva-q          #+#    #+#             */
+/*   Updated: 2021/11/10 17:25:51 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,15 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+# ifndef MAX_FD
+#  define MAX_FD 256
+# endif
+
 char	*get_next_line(int fd);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strjoin(const char *str1, const char *str2);
+char	*ft_strdup(const char *str);
 char	*ft_strndup(const char *str, size_t n);
-char	*ft_appstr(char *str1, char *str2, size_t len1, size_t len2);
 size_t	ft_strlen(const char *str);
-size_t	ft_cpynstr(char *dst, const char *src, size_t n);
-char	*find_endl_chr(const char *str, size_t len);
 
 #endif
