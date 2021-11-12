@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 14:43:00 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/11/12 01:45:21 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2021/11/12 02:27:36 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /*	************************************************************************* */
 /*	*****************   S T A T I C   F U N C T I O N S   ******************* */
 /*	************************************************************************* */
 
-static char	*initial_validation(char **backup);
+static char	*initial_validation(int fd, char **backup);
 static char	*read_line(int fd, char **backup, char **buffer);
 static char	*clear_all_and_return_null(char **backup, char **buffer);
 
@@ -26,42 +26,42 @@ static char	*clear_all_and_return_null(char **backup, char **buffer);
 
 char	*get_next_line(int fd)
 {
-	static char	*backup = NULL;
+	static char	*backup[MAX_FD];
 	char		*buffer;
 	char		*tmp;
 
 	buffer = NULL;
-	if (fd < 0 || fd > MAX_FD || BUFFER_SIZE <= 0)
-		return (clear_all_and_return_null(&backup, &buffer));
-	buffer = initial_validation(&backup);
+	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
+		return (clear_all_and_return_null(backup, &buffer));
+	buffer = initial_validation(fd, backup);
 	if (buffer)
 		return (buffer);
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
-		return (clear_all_and_return_null(&backup, &buffer));
-	tmp = read_line(fd, &backup, &buffer);
+		return (clear_all_and_return_null(backup, &buffer));
+	tmp = read_line(fd, backup, &buffer);
 	return (tmp);
 }
 
 /*	************************************************************************* */
 
-static char	*initial_validation(char **backup)
+static char	*initial_validation(int fd, char **backup)
 {
 	char	*endl_chr;
 	char	*temp1;
 	char	*temp2;
 
-	endl_chr = ft_strchr(*backup, '\n');
+	endl_chr = ft_strchr(backup[fd], '\n');
 	if (!endl_chr)
-		endl_chr = ft_strchr(*backup, 1);
+		endl_chr = ft_strchr(backup[fd], 1);
 	if (endl_chr)
 	{
 		if (*endl_chr == 1)
 			*endl_chr = '\0';
-		temp1 = ft_strndup(*backup, (endl_chr - *backup) + 1);
+		temp1 = ft_strndup(backup[fd], (endl_chr - backup[fd]) + 1);
 		temp2 = ft_strdup(endl_chr + 1);
-		free(*backup);
-		*backup = temp2;
+		free(backup[fd]);
+		backup[fd] = temp2;
 		return (temp1);
 	}
 	return (NULL);
@@ -78,19 +78,19 @@ static char	*read_line(int fd, char **backup, char **buffer)
 	if (read_bytes > 0)
 	{
 		(*buffer)[read_bytes] = '\0';
-		temp = ft_strjoin(*backup, *buffer);
-		free(*backup);
+		temp = ft_strjoin(backup[fd], *buffer);
+		free(backup[fd]);
 		free(*buffer);
-		*backup = temp;
+		backup[fd] = temp;
 		return (get_next_line(fd));
 	}
 	else if (read_bytes < 0)
 		return (clear_all_and_return_null(backup, buffer));
 	free(*buffer);
 	buffer = NULL;
-	temp = ft_strdup(*backup);
-	free(*backup);
-	*backup = NULL;
+	temp = ft_strdup(backup[fd]);
+	free(backup[fd]);
+	backup[fd] = NULL;
 	return (temp);
 }
 
@@ -98,10 +98,19 @@ static char	*read_line(int fd, char **backup, char **buffer)
 
 static char	*clear_all_and_return_null(char **backup, char **buffer)
 {
+	size_t	i;
+
 	if (*backup)
 	{
+		i = 0;
+		while (i < MAX_FD)
+		{
+			free(backup[i]);
+			backup[i] = NULL;
+			i += 1;
+		}
+		printf("Entrou!\n");
 		free(*backup);
-		*backup = NULL;
 	}
 	if (*buffer)
 	{
