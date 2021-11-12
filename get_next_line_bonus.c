@@ -6,7 +6,7 @@
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 14:43:00 by lsilva-q          #+#    #+#             */
-/*   Updated: 2021/11/12 02:27:36 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2021/11/12 19:13:18 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ static char	*clear_all_and_return_null(char **backup, char **buffer)
 			backup[i] = NULL;
 			i += 1;
 		}
-		printf("Entrou!\n");
 		free(*backup);
 	}
 	if (*buffer)
